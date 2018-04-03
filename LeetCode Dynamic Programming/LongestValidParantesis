@@ -1,0 +1,31 @@
+// THIS CODE COUNTS ALL THE VALID PARANTESIS
+int longestValidParentheses(char* s) {
+    if(s == NULL)
+    {return 0;}
+    int i=0;
+    int openFlag =0;
+    unsigned int closeFlag=0;
+    int count = 0;
+    while((s[i] !='\0')&&(s[i]!='('))
+    {
+        i++;
+    }    
+    count = i;
+    while(s[i] !='\0')
+    {
+        if(s[i] == '(')
+        {
+            openFlag++;
+        }else if(s[i] == ')')
+        {
+            openFlag--;
+
+        }        
+        i++;
+    }
+    if(openFlag < 0 )
+        openFlag = openFlag * -1 ; 
+    count = strlen(s) - count - openFlag; 
+    printf("/nlen %d %d %d/n", strlen(s), count, openFlag );
+    return count;
+}
