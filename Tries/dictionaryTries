@@ -1,0 +1,116 @@
+/*******************************
+**** Trie dictionary: Insert, search, and list the words with common prefix 
+********************************/
+
+#include <iostream>
+#include <bits/stdc++.h>
+#include <vector>
+#define ALPHABETS 26
+using namespace std;
+
+typedef struct trieNode{
+    struct trieNode *  items[ALPHABETS];
+    bool isthisEnd; 
+}trieNode;
+
+trieNode * getTrieNode ()
+{
+    trieNode * temp = new trieNode();
+    for(int i=0; i< ALPHABETS ; i ++)
+    {
+        temp->items[i] = NULL;
+    }
+    temp->isthisEnd = false;
+    return temp;
+}
+
+bool insert (trieNode * root, string key)
+{
+    trieNode * crawl = root; 
+    for(int i = 0; i < key.length(); i++)
+    {
+        int index = key[i]-'a';
+        if(!crawl->items[index])
+        {
+            crawl->items[index] = getTrieNode();
+        }
+        crawl = crawl->items[index];
+    }
+    crawl->isthisEnd = true;
+    
+}
+
+bool search (trieNode * root, string key)
+{
+    trieNode * crawl = root; 
+    for(int i = 0; i < key.length(); i++)
+    {
+        int index = key[i]-'a';
+        if(!crawl->items[index])
+        {
+           return false;
+        }
+        crawl = crawl->items[index];
+    }
+    return (crawl->isthisEnd && crawl !=NULL); 
+}
+
+
+string rCall (trieNode * root, string key)
+{
+    string temp;
+    if(!root)
+    {
+          temp.append("  "+ key);
+          return temp;
+    }
+    
+    if(root && root->isthisEnd)
+    {
+        temp.append("  "+ key);
+    }
+    for(int i=0; i< ALPHABETS ; i++)
+    {
+      if(root->items[i])    
+      { 
+          char t = 'a'+i;
+          key.push_back(t);
+          string t2 = rCall(root->items[i], key);
+          temp.append("  "+ t2);
+      }
+    }
+    return temp;
+}
+
+string listDict (trieNode * root, string key)
+{
+    trieNode * crawl = root; 
+    for(int i=0; i < key.length(); i++)
+    {
+        int index = key[i]-'a';
+        if(!crawl->items[index])
+        {
+            return "No matching word found";
+        }
+        crawl = crawl->items[index];
+    }
+    return rCall(crawl, key);
+}
+
+int main()
+{
+    vector <string> input = { "key" , "keys", "bye", "byebye", "pot", "zeb", "zebra"};
+    trieNode * root = new trieNode;
+    for(int i=0; i< input.size(); i++ )
+    {
+        insert(root, input[i]);
+    }
+    
+    cout << search(root, "byebyw") << endl; 
+    cout << search(root, "bye") << endl; 
+    cout << search(root, "zebr") << endl ; 
+    
+    string abc = listDict(root, "z");
+    cout << abc<< endl;
+    return 0;
+}
